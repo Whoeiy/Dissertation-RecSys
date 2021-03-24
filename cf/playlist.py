@@ -19,7 +19,10 @@ import numy as np
 
 class Playlist:
     
-    plSlicePath = "../data/playlist.csv"
+    # test
+    
+    plsSlicePath = '../data_csv/playlists.csv'
+    
     
     def loadPlayListLatest(self):
         

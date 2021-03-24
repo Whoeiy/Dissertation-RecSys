@@ -24,7 +24,7 @@ filenames = os.listdir(data_json_path)
 data_playlists = []
 data_tracks = []
 
-playlists = []
+playlist_tracks = []
 tracks = set()
 
 
@@ -43,15 +43,15 @@ for root, dirs, files in os.walk(data_json_path):
         mpd_slice = json.load(json_obj)
     
     
-    # 提取整理数据到data_playlists, playlists, data_tracks, tracks
+    # 提取整理数据到data_playlists, playlist_tracks, data_tracks, tracks
     # data_playlist: 所有playlist的基本信息
-    # playlists: 所有playlists中tracks的关键信息
+    # playlist_tracks: 所有playlists中tracks的关键信息
     # data_tracks: 所有tracks的基本信息（无重复）
     # tracks: 所有tracks的track_uri信息（无重复）
     for playlist in mpd_slice['playlists']:
         data_playlists.append([playlist[col] for col in playlist_col])
         for track in playlist['tracks']:
-            playlists.append([playlist['pid'], track['track_uri'], track['pos']])
+            playlist_tracks.append([playlist['pid'], track['track_uri'], track['pos']])
             if track['track_uri'] not in tracks:
                 data_tracks.append([track[col] for col in tracks_col])
                 tracks.add(track['track_uri'])
@@ -68,14 +68,14 @@ for root, dirs, files in os.walk(data_json_path):
     
     track_uri2tid = df_tracks.set_index('track_uri').tid
     
-    # playlists
-    df_playlists = pd.DataFrame(playlists, columns=['pid', 'tid', 'pos'])
-    df_playlists.tid = df_playlists.tid.map(track_uri2tid)
+    # playlist_tracks
+    df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['pid', 'tid', 'pos'])
+    df_playlist_tracks.tid = df_playlist_tracks.tid.map(track_uri2tid)
     
     # to csv
     df_playlists_info.to_csv(r'../data_csv/test/playlists_info.csv', index=None)
     df_tracks.to_csv(r'../data_csv/test/tracks.csv', index=None)
-    df_playlists.to_csv(r'../data_csv/test/playlists.csv', index=None)
+    df_playlist_tracks.to_csv(r'../data_csv/test/playlist_tracks.csv', index=None)
     
 
 
