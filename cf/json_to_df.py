@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar  3 10:49:02 2021
+Created on 27 Mar  3 17:26:45 2021
 
 @author: YU YUE
 
@@ -51,7 +51,7 @@ for root, dirs, files in os.walk(data_json_path):
     for playlist in mpd_slice['playlists']:
         data_playlists.append([playlist[col] for col in playlist_col])
         for track in playlist['tracks']:
-            playlist_tracks.append([playlist['pid'], track['track_uri'], track['pos']])
+            playlist_tracks.append([playlist['pid'], track['track_uri'], '1', track['pos']])
             if track['track_uri'] not in tracks:
                 data_tracks.append([track[col] for col in tracks_col])
                 tracks.add(track['track_uri'])
@@ -69,8 +69,10 @@ for root, dirs, files in os.walk(data_json_path):
     track_uri2tid = df_tracks.set_index('track_uri').tid
     
     # playlist_tracks
-    df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['pid', 'tid', 'pos'])
+    df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
+    # df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['user', 'item', 'rating', 'pos'])
     df_playlist_tracks.tid = df_playlist_tracks.tid.map(track_uri2tid)
+    # df_playlist_tracks.item = df_playlist_tracks.item.map(track_uri2tid)
     
     # to csv
     df_playlists_info.to_csv(r'../data_csv/test/playlists_info.csv', index=None)
