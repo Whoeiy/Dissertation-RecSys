@@ -73,7 +73,7 @@ for similarUser in kNeighbors:
     for rating in theirRatings:     # rating[0]: item_inner_id, rating[1]: rating
         candidates[rating[0]] += (rating[1] / 5.0) * userSimilarityScore
 print("candidates\n")
-print(candidates)
+# print(candidates)
 
 '''
     5. candidate filtering
@@ -88,7 +88,7 @@ pos = 0
 for itemID, ratingSum in sorted(candidates.items(), key=itemgetter(1), reverse=True):
     if not itemID in watched:
         tid = trainSet.to_raw_iid(itemID)
-        # print(ml.getMovieName(int(movieID)), ratingSum)
+        print(mpd.getTrackName(int(tid)), ratingSum)
         print(tid, ratingSum)
         pos += 1
         if (pos > 10):

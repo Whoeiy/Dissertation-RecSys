@@ -31,7 +31,7 @@ print(simsMatrix)
 testUserInnerID = trainSet.to_inner_uid(testSubject)
 
 # Get the top K items we rated
-testUserRatings = trainSet.ur[testUserInnerID]
+testUserRatings = trainSet.ur[testUserInnerID]  # trainSet.ur return a tuple: (item_inner_id, rating)
 kNeighbors = heapq.nlargest(k, testUserRatings, key=lambda t: t[1])
 
 # Get similar items to stuff we liked (weighted by rating)

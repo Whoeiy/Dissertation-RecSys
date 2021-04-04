@@ -31,37 +31,31 @@ class Mpd:
         # Look for files relative to the directory we are running from
         os.chdir(os.path.dirname(sys.argv[0]))
         
-        self.pid_to_pname = {}
-        self.pname_to_pid = {}
+        self.tid_to_tname = {}
+        self.tname_to_tid = {}
         
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
-        df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
-        df.columns = ['user', 'item', 'rating']
-        print(df.head(10))
+        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt.columns = ['user', 'item', 'rating']
+        # print(df.head(10))
         reader = Reader(rating_scale=(0,1))
-        ratingsDataset = Dataset.load_from_df(df[['user', 'item', 'rating']], reader)
-        
-        
+        ratingsDataset = Dataset.load_from_df(df_pnt[['user', 'item', 'rating']], reader)
+        '''
+            have problem -- start
+        '''
+        df_t = pd.read_csv(self.trackPath)
+        self.tid_to_tname = df_t.groupby('tid')['track_name'].apply(lambda x:str(x)).to_dict()
+        print(self.tid_to_tname.values())
+          
         return ratingsDataset
     
-        
-        """
-        
-        
-        
-        ratingsDataset = Dataset.load_from_file(self.pntPath, reader=reader)
-        with open(self.playlistPath, newline='', encoding='ISO-8859-1') as csvfile:
-            playlistReader = csv.reader(csvfile)
-            next(playlistReader) # skip header line
-            for row in playlistReader:
-                pid = row[0]
-                tid = row[1]
-                
-        
+    def getTrackName(self, tid):
+        return self.tid_to_tname.get(tid, "track name not found")
+        '''
+            end
+        '''
     
-    def playlistRatings(self, pid):
-        playlistRatings = []
+       
         
-        with open(self.)
-        """
+        
         
