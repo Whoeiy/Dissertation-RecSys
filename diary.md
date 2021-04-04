@@ -45,3 +45,13 @@ a diary recording the progress and learned knowledge.
 - git 更新远程分支到本地
 
   https://www.cnblogs.com/delav/p/11118555.html
+  
+- enumerate()函数
+
+  https://www.runoob.com/python/python-func-enumerate.html
+
+
+## 0404
+
+- implicit feedback
+  - https://jessesw.com/Rec-System/
