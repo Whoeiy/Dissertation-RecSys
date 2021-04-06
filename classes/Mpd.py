@@ -13,6 +13,9 @@ import re
 
 from surprise import Dataset
 from surprise import Reader
+from surprise import BaselineOnly
+from surprise import NormalPredictor
+from surprise.model_selection import cross_validate
 
 from collections import defaultdict
 import numpy as np
@@ -25,7 +28,16 @@ class Mpd:
     trackPath = '../data_csv/test/tracks.csv'
     playlistPath = '../data_csv/test/playlists_info.csv'
     
-    
+    def getPntDf(self):
+        os.chdir(os.path.dirname(sys.argv[0]))
+        
+        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt.columns = ['user', 'item', 'rating']
+        
+        df_pnt.head(20)
+        
+        return df_pnt
+        
     def loadMpdLatest(self):
         
         # Look for files relative to the directory we are running from
@@ -40,18 +52,22 @@ class Mpd:
         # print(df.head(10))
         reader = Reader(rating_scale=(0,1))
         ratingsDataset = Dataset.load_from_df(df_pnt[['user', 'item', 'rating']], reader)
+        
+        cross_validate(NormalPredictor(), ratingsDataset, cv=2, verbose=True)
+        # cross_validate(BaselineOnly(), ratingsDataset, verbose=True)
+        return ratingsDataset
         '''
             have problem -- start
-        '''
+        
         df_t = pd.read_csv(self.trackPath)
         self.tid_to_tname = df_t.groupby('tid')['track_name'].apply(lambda x:str(x)).to_dict()
         print(self.tid_to_tname.values())
           
-        return ratingsDataset
+        
     
     def getTrackName(self, tid):
         return self.tid_to_tname.get(tid, "track name not found")
-        '''
+        
             end
         '''
         

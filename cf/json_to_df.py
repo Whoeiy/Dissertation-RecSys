@@ -27,7 +27,6 @@ data_tracks = []
 playlist_tracks = []
 tracks = set()
 
-
 # for filename in filenames:
     
     # 查看data_json目录下所有的文件，过滤掉隐藏文件
@@ -74,11 +73,14 @@ for root, dirs, files in os.walk(data_json_path):
     df_playlist_tracks.tid = df_playlist_tracks.tid.map(track_uri2tid)
     # df_playlist_tracks.item = df_playlist_tracks.item.map(track_uri2tid)
     
+    # 记录频率
+    df_playlist_tracks_count = df_playlist_tracks.groupby(['pid', 'tid'], as_index=False)['rating'].count()
+    
     # to csv
     df_playlists_info.to_csv(r'../data_csv/test/playlists_info.csv', index=None)
     df_tracks.to_csv(r'../data_csv/test/tracks.csv', index=None)
-    df_playlist_tracks.to_csv(r'../data_csv/test/playlist_tracks.csv', index=None)
-    
+    df_playlist_tracks.to_csv(r'../data_csv/test/playlist_tracks_raw.csv', index=None)
+    df_playlist_tracks_count.to_csv(r'../data_csv/test/playlist_tracks.csv')
 
 
 
