@@ -18,6 +18,8 @@ class Knn:
         
         distances, indices = model.kneighbors([matrix.iloc[query_index, :]], n_neighbors = 10)
         # distances, indices = model.kneighbors([matrix.iloc[query_index, :]], n_neighbors = 10)
+        print(len(distances.flatten()))
+        
         for i in range(0, len(distances.flatten())):
             if i == 0:
                 print("Searching recommendation for user: ", matrix.index[query_index])
@@ -27,4 +29,4 @@ class Knn:
                   print("\n  User: ", item[0])
                   print("    Play Count: ", item[2])  
                   print("    Song: ",  item[1])
-               
+                  

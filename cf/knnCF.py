@@ -34,7 +34,7 @@ print(df_pnt.head(20))
 # cross_validate(clf, data, measures=['MAE'], cv=5, verbose=True)
 
 
-from scipy.sparse import csr_matrix
+# from scipy.sparse import csr_matrix
 # pivot rating into movie features
 df_track_feature = df_pnt.pivot(
     index='user',
@@ -42,13 +42,13 @@ df_track_feature = df_pnt.pivot(
     values='rating'
 ).fillna(0)
 
-matrix_track_features = csr_matrix(df_track_feature.values)
+# matrix_track_features = csr_matrix(df_track_feature.values)
 print(df_track_feature.head(20))
 
 
 from sklearn.neighbors import NearestNeighbors
 model_knn = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=20, n_jobs=-1)
-model_knn.fit(matrix_track_features)
+model_knn.fit(df_track_feature)
 
 '''
 def findRecomendationsUsers(model, matrix, data, query_index):
@@ -66,7 +66,7 @@ def findRecomendationsUsers(model, matrix, data, query_index):
  '''             
 knn = Knn()
 
-knn.findRecomendationsUsers(model_knn, matrix_track_features, df_pnt, 0)
+knn.findRecomendationsUsers(model_knn, df_track_feature, df_pnt, 0)
 '''
             print("else")
 num_playlists = len(df_pnt.pid.unique)

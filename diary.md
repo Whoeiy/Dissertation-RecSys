@@ -63,3 +63,11 @@ a diary recording the progress and learned knowledge.
 - Neighborhood models(user-based and item-based KNN)
 - Latent factor models(with SVD)
 - playlist_tracks.csv表，需对每个playlist的track去重
+- 环境安装：
+  - scikit-learn
+  - scipy
+- 必看
+  - https://github.com/VasiliyRubtsov/recsys2018
+  - https://nbviewer.jupyter.org/github/NicolasHug/Surprise/blob/master/examples/notebooks/KNNBasic_analysis.ipynb
+  - https://blog.csdn.net/weixin_42608414/article/details/87712114?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-1&spm=1001.2101.3001.4242
+  - https://blog.csdn.net/mouday/article/details/88181713?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-1&spm=1001.2101.3001.4242
