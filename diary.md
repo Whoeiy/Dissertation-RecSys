@@ -55,3 +55,11 @@ a diary recording the progress and learned knowledge.
 
 - implicit feedback
   - https://jessesw.com/Rec-System/
+
+
+
+## 0405
+
+- Neighborhood models(user-based and item-based KNN)
+- Latent factor models(with SVD)
+- playlist_tracks.csv表，需对每个playlist的track去重

@@ -54,6 +54,25 @@ class Mpd:
         '''
             end
         '''
+        
+    def getPopularityRanks(self):
+        ratings = defaultdict(int)
+        rankings = defaultdict(int)
+        
+        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt.columns = ['user', 'item', 'rating']
+        
+        with open(self.ratingsPath, newline='') as csvfile:
+            ratingReader = csv.reader(csvfile)
+            next(ratingReader)
+            for row in ratingReader:
+                trackID = int(row[1])
+                ratings[trackID] += 1
+        rank = 1
+        for movieID, ratingCount in sorted(ratings.items(), key=lambda x: x[1], reverse=True):
+            rankings[movieID] = rank
+            rank += 1
+        return rankings
     
        
         
