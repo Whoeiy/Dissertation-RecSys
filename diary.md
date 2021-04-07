@@ -71,3 +71,23 @@ a diary recording the progress and learned knowledge.
   - https://nbviewer.jupyter.org/github/NicolasHug/Surprise/blob/master/examples/notebooks/KNNBasic_analysis.ipynb
   - https://blog.csdn.net/weixin_42608414/article/details/87712114?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-1&spm=1001.2101.3001.4242
   - https://blog.csdn.net/mouday/article/details/88181713?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-1&spm=1001.2101.3001.4242
+
+
+
+
+
+## 0407
+
+- remember: 在win系统上修改test_playlist_tracks.csv的column名为'tid'而不是'track_uri'
+
+- 安装库implicit
+
+  - ```
+    conda install -c conda-forge implicit
+    ```
+
+- 安装ipywidgets
+- 必读
+  - https://blog.csdn.net/weixin_42608414/category_8685648.html?spm=1001.2014.3001.5482
+- implicit
+  - https://blog.csdn.net/weixin_42608414/article/details/90319447

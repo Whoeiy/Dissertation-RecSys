@@ -14,8 +14,8 @@ from operator import itemgetter
 from surprise import KNNBasic
 
 
-testSubject = 0
-k = 10
+testSubject = 7000
+k = 20
 
 
 mpd = Mpd()
@@ -88,7 +88,7 @@ pos = 0
 for itemID, ratingSum in sorted(candidates.items(), key=itemgetter(1), reverse=True):
     if not itemID in watched:
         tid = trainSet.to_raw_iid(itemID)
-        print(mpd.getTrackName(int(tid)), ratingSum)
+        # print(mpd.getTrackName(int(tid)), ratingSum)
         print(tid, ratingSum)
         pos += 1
         if (pos > 10):

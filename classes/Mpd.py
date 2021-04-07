@@ -25,6 +25,7 @@ class Mpd:
     
     # test - slice file
     pntPath = '../data_csv/test/playlist_tracks.csv'
+    test_pntPath = '../data_csv/test/test_playlist_tracks.csv'
     trackPath = '../data_csv/test/tracks.csv'
     playlistPath = '../data_csv/test/playlists_info.csv'
     
@@ -70,7 +71,41 @@ class Mpd:
         
             end
         '''
+    def loadMpdTrainset(self):
+        # Look for files relative to the directory we are running from
+        os.chdir(os.path.dirname(sys.argv[0]))
         
+        self.tid_to_tname = {}
+        self.tname_to_tid = {}
+        
+        # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt.columns = ['user', 'item', 'rating']
+        # print(df.head(10))
+        reader = Reader(rating_scale=(0,1))
+        trainDataset = Dataset.load_from_df(df_pnt[['user', 'item', 'rating']], reader)
+        
+        # cross_validate(BaselineOnly(), ratingsDataset, verbose=True)
+        return trainDataset
+    
+    def loadMpdDataDf(self):
+        # Look for files relative to the directory we are running from
+        os.chdir(os.path.dirname(sys.argv[0]))
+        
+        self.tid_to_tname = {}
+        self.tname_to_tid = {}
+        
+        # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        df_pnt.columns = ['user', 'item', 'rating']
+        # print(df.head(10))
+        # reader = Reader(rating_scale=(0,1))
+        # trainDataset = Dataset.load_from_df(df_pnt[['user', 'item', 'rating']], reader)
+        
+        # cross_validate(BaselineOnly(), ratingsDataset, verbose=True)
+        return df_pnt
+    
+    
     def getPopularityRanks(self):
         ratings = defaultdict(int)
         rankings = defaultdict(int)

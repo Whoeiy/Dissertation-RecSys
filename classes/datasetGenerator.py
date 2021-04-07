@@ -61,17 +61,17 @@ class small_trainset:
         # playlist_tracks: 所有playlists中tracks的关键信息
         # data_tracks: 所有tracks的基本信息（无重复）
         # tracks: 所有tracks的track_uri信息（无重复）
-        '''
+        
         for playlist in mpd_slice['playlists']:
             self.data_playlists.append([playlist[col] for col in self.playlist_col])
-            self.tracklen_pp.append([playlist['pid'],len(playlist['tracks']), math.floor(len(playlist['tracks'])*0.8)])
+            # self.tracklen_pp.append([playlist['pid'],len(playlist['tracks']), math.floor(len(playlist['tracks'])*0.8)])
             for track in playlist['tracks']:
                 self.playlist_tracks.append([playlist['pid'], track['track_uri'], '1', track['pos']])
                 if track['track_uri'] not in self.tracks:
                     self.data_tracks.append([track[col] for col in self.tracks_col])
                     self.tracks.add(track['track_uri'])
-        '''
-                    
+                
+        ''' 手动划分testset - needless
         for playlist in mpd_slice['playlists']:
             self.data_playlists.append([playlist[col] for col in self.playlist_col])
             self.tracklen_pp.append([playlist['pid'],len(playlist['tracks']), math.floor(len(playlist['tracks'])*0.8)])
@@ -84,9 +84,10 @@ class small_trainset:
                     # belong to train dataset
                     print('belong to train dataset')
                     self.playlist_tracks.append([playlist['pid'], track['track_uri'], '1', track['pos']])
-                    if track['track_uri'] not in self.tracks:
-                        self.data_tracks.append([track[col] for col in self.tracks_col])
-                        self.tracks.add(track['track_uri'])
+                if track['track_uri'] not in self.tracks:
+                    self.data_tracks.append([track[col] for col in self.tracks_col])
+                    self.tracks.add(track['track_uri'])
+        '''
                     
                     
     def jsonToDf(self):
@@ -103,8 +104,8 @@ class small_trainset:
         
         track_uri2tid = df_tracks.set_index('track_uri').tid
         
-        df_tracklen_pp = pd.DataFrame(self.tracklen_pp, columns=['pid', 'raw_tracks_len', 'train_tracks_len'])
-        print(df_tracklen_pp.head(10))
+        # df_tracklen_pp = pd.DataFrame(self.tracklen_pp, columns=['pid', 'raw_tracks_len', 'train_tracks_len'])
+        # print(df_tracklen_pp.head(10))
         
         # playlist_tracks
         df_playlist_tracks = pd.DataFrame(self.playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
@@ -114,9 +115,9 @@ class small_trainset:
         
         df_playlist_tracks_count = df_playlist_tracks.groupby(['pid', 'tid'], as_index=False)['rating'].count()
         
-        
-        df_test_playlist_tracks = pd.DataFrame(columns=['pid', 'tid', 'rating'], index=[0])
-        df_test_playlist_tracks = pd.DataFrame(self.test_playlist_tracks, columns=['pid', 'track_uri', 'rating', 'pos'])
+        # playlist_tracks for test  needless
+        # df_test_playlist_tracks = pd.DataFrame(self.test_playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
+        # df_test_playlist_tracks.tid = df_test_playlist_tracks.tid.map(track_uri2tid)
         '''
         for pid in df_playlist_tracks_count['pid']:
             df_temp = df_tracklen_pp.loc[df_tracklen_pp['pid']==pid]
@@ -131,7 +132,7 @@ class small_trainset:
         df_tracks.to_csv(r'../data_csv/test/tracks.csv', index=None)
         df_playlist_tracks.to_csv(r'../data_csv/test/playlist_tracks_raw.csv', index=None)
         df_playlist_tracks_count.to_csv(r'../data_csv/test/playlist_tracks.csv')
-        df_test_playlist_tracks.to_csv(r'../data_csv/test/test_playlist_tracks.csv')
+        # df_test_playlist_tracks.to_csv(r'../data_csv/test/test_playlist_tracks.csv')
 
 
 # sclass test_dataset:
