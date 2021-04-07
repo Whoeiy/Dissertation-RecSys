@@ -66,7 +66,7 @@ def findRecomendationsUsers(model, matrix, data, query_index):
  '''             
 knn = Knn()
 
-knn.findRecomendationsUsers(model_knn, df_track_feature, df_pnt, 0)
+knn.findRecomendationsUsers(model_knn, df_track_feature, df_pnt, 1)
 '''
             print("else")
 num_playlists = len(df_pnt.pid.unique)
