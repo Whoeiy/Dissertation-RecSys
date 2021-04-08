@@ -9,4 +9,4 @@ from classes.datasetGenerator import small_trainset
 
 data_json_path = "../data_json"
 
-small_trainset(data_json_path)
+small_trainset(data_json_path, 2)

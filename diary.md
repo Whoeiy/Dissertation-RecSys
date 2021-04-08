@@ -91,3 +91,13 @@ a diary recording the progress and learned knowledge.
   - https://blog.csdn.net/weixin_42608414/category_8685648.html?spm=1001.2014.3001.5482
 - implicit
   - https://blog.csdn.net/weixin_42608414/article/details/90319447
+
+
+
+
+
+# 0408
+
+- pytables
+- vaex
+  - conda install -c conda-forge vaex

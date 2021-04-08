@@ -15,7 +15,7 @@ class small_trainset:
     '''
     generate a small train data set(just for debug)
     '''
-    def __init__(self, data_json_path):
+    def __init__(self, data_json_path, output_type):
     # def __init__(self, data_json_path, save_type, save_dir, last_slice_tid):
         
         self.playlist_col = ['pid', 'name', 'collaborative', 'modified_at', 'num_tracks', 'num_albums', 'num_followers', 'num_edits', 'duration_ms', 'num_artists']
@@ -30,7 +30,7 @@ class small_trainset:
         self.tracklen_pp = []
         self.test_playlist_tracks = []
         
-        # self.save_type = save_type
+        self.output_type = output_type
         
         # self.last_slice_tid = last_slice_tid
         # self.this_slice_tid = int()
@@ -47,8 +47,14 @@ class small_trainset:
                     mpd_slice = json.load(json_obj)
                     print("processing file: "+str(filename))
                     self.generator(mpd_slice)
-        
-        self.jsonToDf()
+        if output_type == 1:
+            # csv
+            print("writing into the csv file...")
+            self.jsonToCSV()
+        else:
+            # hdf5
+            print("writing into the hdf5 file...")
+            self.jsonToHDF5()
         print("done.")
         
 
@@ -90,7 +96,7 @@ class small_trainset:
         '''
                     
                     
-    def jsonToDf(self):
+    def jsonToCSV(self):
         
         # playlists_info
         df_playlists_info = pd.DataFrame(self.data_playlists, columns=self.playlist_col)
@@ -133,6 +139,43 @@ class small_trainset:
         df_playlist_tracks.to_csv(r'../data_csv/test/playlist_tracks_raw.csv', index=None)
         df_playlist_tracks_count.to_csv(r'../data_csv/test/playlist_tracks.csv')
         # df_test_playlist_tracks.to_csv(r'../data_csv/test/test_playlist_tracks.csv')
+        
+    def jsonToHDF5(self):
+        # playlists_info
+        df_playlists_info = pd.DataFrame(self.data_playlists, columns=self.playlist_col)
+        df_playlists_info['collaborative'] = df_playlists_info['collaborative'].map({'false':False, 'true':True})
+        
+        # tracks
+        df_tracks = pd.DataFrame(self.data_tracks, columns=self.tracks_col)
+        # df_tracks['tid'] = self.last_slice_tid + df_tracks.index
+        df_tracks['tid'] = df_tracks.index
+        # print(df_tracks['tid'])
+        
+        track_uri2tid = df_tracks.set_index('track_uri').tid
+        
+        # df_tracklen_pp = pd.DataFrame(self.tracklen_pp, columns=['pid', 'raw_tracks_len', 'train_tracks_len'])
+        # print(df_tracklen_pp.head(10))
+        
+        # playlist_tracks
+        df_playlist_tracks = pd.DataFrame(self.playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
+        # df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['user', 'item', 'rating', 'pos'])
+        df_playlist_tracks.tid = df_playlist_tracks.tid.map(track_uri2tid)
+        # df_playlist_tracks.item = df_playlist_tracks.item.map(track_uri2tid)        
+        
+        df_playlist_tracks_count = df_playlist_tracks.groupby(['pid', 'tid'], as_index=False)['rating'].count()
+        
+        hdf5_path = "../data_hdf5"
+        store = pd.HDFStore("../data_hdf5/playlists_info.hdf5")
+        store.put(key='playlists_info', value=df_playlists_info)
+        store.close()
+        
+        store = pd.HDFStore("../data_hdf5/tracks.hdf5")
+        store.put(key='tracks', value=df_tracks)
+        store.close()
+        
+        store = pd.HDFStore("../data_hdf5/playlist_tracks.hdf5")
+        store.put(key='playlist_tracks', value=df_playlist_tracks_count)
+        store.close()
 
 
 # sclass test_dataset:
