@@ -10,7 +10,7 @@ import json
 import math
 import pandas as pd
 
-class small_trainset:
+class trainset:
     
     '''
     generate a small train data set(just for debug)

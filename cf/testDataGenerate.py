@@ -5,8 +5,8 @@ Created on Wed Apr  7 15:34:46 2021
 
 @author: whoeiy
 """
-from classes.datasetGenerator import small_trainset
+from classes.datasetGenerator import trainset
 
-data_json_path = "../data_json"
+data_json_path = "../../data_json"
 
-small_trainset(data_json_path, 2)
+trainset(data_json_path, 2)
