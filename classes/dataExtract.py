@@ -11,6 +11,7 @@ import math
 import pandas as pd
 import random
 import vaex
+import time
 
 class extractor:
     
@@ -153,6 +154,7 @@ class extractor:
         df_show = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').head(100)
         # self.df_test_pnt = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').head(100)
         # print(self.df_test_pnt.head(50))
+        time.sleep(10)
         print('only have 100:')
         print(df_show.shape[0])
         # 风险点：会改变track在歌单中的顺序，但是还有pos字段
@@ -171,9 +173,14 @@ class extractor:
         df_pnt_candidate = df_pnt_candidate.sample(n=6000)
         # 5
         pid2pnt = df_pnt_candidate[0:2000]['pid'].tolist()
-        df_pnt_candi_selected = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').head(5)
+        print("notice:", len(pid2pnt))
+        df_pnt_candi_selected = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').apply(lambda i:i.iloc[0:5])
+        # df_pnt_candi_selected = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid')
+        
         # df_show.append(df_pnt_candi_selected)
+        time.sleep(10)
         print('all5:', df_pnt_candi_selected.shape[0])
+        '''
         # 10
         pid2pnt = df_pnt_candidate[2000:4000]['pid'].tolist()
         df_pnt_candi_selected = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').head(10)
@@ -182,7 +189,7 @@ class extractor:
         pid2pnt = df_pnt_candidate[4000:]['pid'].tolist()
         df_pnt_candi_selected = self.df_playlist_tracks_count.loc[self.df_playlist_tracks_count['pid'].isin(pid2pnt)].groupby('pid').head(25)
         print('all25:', df_pnt_candi_selected.shape[0])
-        
+        '''
         
         
                     
