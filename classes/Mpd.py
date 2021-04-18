@@ -20,11 +20,13 @@ from surprise.model_selection import cross_validate
 from collections import defaultdict
 import numpy as np
 import pandas as pd
+import vaex
 
 class Mpd:
     
     # test - slice file
     pntPath = '../data_csv/test/playlist_tracks.csv'
+    pntPath_hdf5 = '../data_hdf5/playlist_tracks.hdf5'
     test_pntPath = '../data_csv/test/test_playlist_tracks.csv'
     trackPath = '../data_csv/test/tracks.csv'
     playlistPath = '../data_csv/test/playlists_info.csv'
@@ -47,8 +49,11 @@ class Mpd:
         self.tid_to_tname = {}
         self.tname_to_tid = {}
         
+        # using vaex
+        df_vaex = vaex.open(self.pntPath)
+        df_pnt = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
-        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        # df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         df_pnt.columns = ['user', 'item', 'rating']
         # print(df.head(10))
         reader = Reader(rating_scale=(0,1))
@@ -78,8 +83,11 @@ class Mpd:
         self.tid_to_tname = {}
         self.tname_to_tid = {}
         
+        # using vaex
+        df_vaex = vaex.open(self.pntPath_hdf5)
+        df_pnt = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
-        df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
+        # df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         df_pnt.columns = ['user', 'item', 'rating']
         # print(df.head(10))
         reader = Reader(rating_scale=(0,1))

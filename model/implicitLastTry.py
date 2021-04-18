@@ -14,7 +14,7 @@ import random
 import implicit
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
-from classes.Mpd import Mpd
+from classes.Mpd import Mpd  
 
 mpd = Mpd()
 
@@ -23,14 +23,15 @@ df_dataset = mpd.loadMpdDataDf()
 sparse_track_playlist = sparse.csr_matrix((df_dataset['rating'].astype(float), (df_dataset['item'], df_dataset['user'])))
 sparse_playlist_track = sparse.csr_matrix((df_dataset['rating'].astype(float), (df_dataset['user'], df_dataset['item'])))
 
-# print(sparse_track_playlist.shape)
-# print(sparse_playlist_track.shape)
+print(sparse_track_playlist.shape)
+print(sparse_playlist_track.shape)
 
 # 训练模型
 #  设置20个特征因子
 alpha = 40
 data = (sparse_track_playlist * alpha).astype('double')
- 
+
+print("model training...")
 model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=50)
 model.fit(data)
 
