@@ -83,7 +83,7 @@ the_predictions = df.loc[df['uid']==7000].sort_values(by='err')
 print(worst_predictions)
 print(the_predictions)
 
-'''
+
 def get_top_n(predictions, n=10):
     top_n = defaultdict(list)
     for uid, iid, true_r, est, _ in predictions:
@@ -99,10 +99,24 @@ topNPredicted = get_top_n(predictions, n=20)
  
 #打印为每个用户推荐的10部电影和对它们的评分
 
+
+    # 定义两个list用于存储文章的title和推荐分数ccccccc。
+df_tid2tname = mpd.get_tid2tname_df()
+df_result = pd.DataFrame(columns=['track_name', 'tid', 'score'])
+
 for uid, user_ratings in topNPredicted.items():
     if uid == 7000:
-      print(uid, [(iid,round(rating,1)) for (iid, rating) in user_ratings])
-'''
+        # df_result.loc[0] = CC
+        for iid, rating in user_ratings:
+            tname = df_tid2tname.loc[df_tid2tname.tid == iid].track_name
+            df_result.loc[df_result.shape[0]] = [tname, iid, round(rating, 1)]
+        print(uid, [(iid,round(rating,1)) for (iid, rating) in user_ratings])
+        print(df_result.head(20))
+        
+        
+        df_result.to_csv(r'../data/result/knn/recommend_20K.csv', index=None)
+        print("DONE.")  
+
 
 
 

@@ -70,7 +70,7 @@ class extractor:
         else:
             # hdf5
             print("writing into the hdf5 file...")
-            self.jsonToHDF5()
+            self.jsonToHDF5(dataset_type)
         print("done.")
         
 
@@ -122,7 +122,7 @@ class extractor:
         self.df_tracks = pd.DataFrame(self.data_tracks, columns=self.track_col)
         # df_tracks['tid'] = self.last_slice_tid + df_tracks.index
         self.df_tracks['tid'] = self.df_tracks.index
-        # print(df_tracks['tid'])
+        print(self.df_tracks['tid'])
         
         track_uri2tid = self.df_tracks.set_index('track_uri').tid
         
@@ -133,7 +133,7 @@ class extractor:
         self.df_playlist_tracks = pd.DataFrame(self.playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
         # df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['user', 'item', 'rating', 'pos'])
         self.df_playlist_tracks.tid = self.df_playlist_tracks.tid.map(track_uri2tid)
-        # df_playlist_tracks.item = df_playlist_tracks.item.map(track_uri2tid)        
+        # df_playlist_tracks.item cccc= df_playlist_tracks.item.map(track_uri2tid)        
         
         
         self.df_playlist_tracks_count = self.df_playlist_tracks.groupby(['pid', 'tid'], as_index=False)['rating'].count() 
@@ -214,7 +214,7 @@ class extractor:
         df_playlist_tracks = pd.DataFrame(self.playlist_tracks, columns=['pid', 'tid', 'rating', 'pos'])
         # df_playlist_tracks = pd.DataFrame(playlist_tracks, columns=['user', 'item', 'rating', 'pos'])
         df_playlist_tracks.tid = df_playlist_tracks.tid.map(track_uri2tid)
-        # df_playlist_tracks.item = df_playlist_tracks.item.map(track_uri2tid)        
+        # df_playlicst_tracks.item = df_playlist_tracks.item.map(track_uri2tid)        
         
         df_playlist_tracks_count = df_playlist_tracks.groupby(['pid', 'tid'], as_index=False)['rating'].count()
         
@@ -240,8 +240,8 @@ class extractor:
     def jsonToHDF5(self, dataset_type):
         
         if dataset_type == 1:
-            hdf5_path = "../data/hdf5_0419/"
-            # plylists_info
+            hdf5_path = "../data/hdf5_500K/"
+            # plyliscts_info
             vaex_df = vaex.from_pandas(self.df_playlists_info, copy_index=False)
             vaex_df.export_hdf5(hdf5_path+'playlists_info.hdf5')
             # tracks

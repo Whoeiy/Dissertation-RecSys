@@ -7,6 +7,6 @@ Created on Wed Apr  7 15:34:46 2021
 """
 from classes.dataExtract import extractor
 
-data_json_path = "../../data_json"
+data_json_path = "../../data_json_500K"
 
-extractor(data_json_path, 2)
+extractor(data_json_path, 1, 2)

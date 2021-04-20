@@ -11,7 +11,7 @@ import vaex
 
 class getData:
     pntPath_hdf5 = '../data/hdf5/playlist_tracks.hdf5'
-    tracksPath_hdf5 = '../data/hdf5/tracks.hdf5'
+    tracksPath_hdf5 = '../data/hdf5_500K/tracks.hdf5'
     playlistsPath_hdf5 = '../data/hdf5/playlists_info.hdf5'
     
     def getPlaylists(self):
@@ -32,7 +32,7 @@ class getData:
         
         # self.tid_to_tname = {}
         # self.tname_to_tid = {}
-        self.track_col = ['track_uri', 'track_name', 'artist_uri', 'artist_name', 'album_uri', 'album_name', 'duration_ms']
+        self.track_col = ['track_uri', 'track_name', 'artist_uri', 'artist_name', 'album_uri', 'album_name', 'duration_ms', 'tid']
         
         # using vaex
         df_vaex = vaex.open(self.tracksPath_hdf5)

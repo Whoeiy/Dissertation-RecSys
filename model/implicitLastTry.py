@@ -43,7 +43,6 @@ n_similar = 10
 playlist_vecs = model.user_factors
 #获取内容矩阵
 track_vecs = model.item_factors
-#计算内容的向量的范数
 track_norms = np.sqrt((track_vecs * track_vecs).sum(axis=1))
 #计算指定的content_id 与其他所有文章的相似度
 scores = track_vecs.dot(track_vecs[tid]) / track_norms
@@ -83,18 +82,19 @@ def recommend(pid, sparse_playlist_track, playlist_vecs, track_vecs, num_tracks=
     # 根据评分值进行排序,并获取指定数量的评分值最高的文章
     track_idx = np.argsort(recommend_vector)[::-1][:num_tracks]
     
-    # 定义两个list用于存储文章的title和推荐分数。
-    # titles = []
+    # 定义两个list用于存储文章的title和推荐分数ccccccc。
+    df_tid2tname = mpd.get_tid2tname_df()
+    tnames = []
     tids = []
     scores = []
  
     for idx in track_idx:
         # 将title和分数添加到list中
-        #titles.append(grouped_df.title.loc[grouped_df.content_id == idx].iloc[0])
+        tnames.append(df_tid2tname.loc[df_tid2tname.tid == idx].track_name)
         tids.append(idx)
         scores.append(recommend_vector[idx])
  
-    recommendations = pd.DataFrame({'tid': tids, 'score': scores})
+    recommendations = pd.DataFrame({'track_name':tnames, 'tid': tids, 'score': scores})
  
     return recommendations
 
@@ -104,11 +104,15 @@ def recommend(pid, sparse_playlist_track, playlist_vecs, track_vecs, num_tracks=
 # 从model中获取经过训练的用户和内容矩阵,并将它们存储为稀疏矩阵
 playlist_vecs = sparse.csr_matrix(model.user_factors)
 track_vecs = sparse.csr_matrix(model.item_factors)
- 
+
 # 为指定用户推荐文章。
 pid = 7000
 recommendations = recommend(pid, sparse_playlist_track, playlist_vecs, track_vecs)
 print(recommendations)
+
+
+recommendations.to_csv(r'../data/result/implicit/recommend_20K.csv', index=None)
+print("DONE.")
 
 
 
