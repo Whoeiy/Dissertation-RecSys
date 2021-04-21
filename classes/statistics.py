@@ -6,6 +6,8 @@ Created on Sun Apr 18 21:11:23 2021
 """
 import pandas as pd
 import classes.getData as getData
+import os
+import psutil
 
 class Stat:
     
@@ -41,6 +43,13 @@ class Stat:
         count['df_seed_100'] = self.df_seed_100.shape[0]
         count['df_seed_100more'] = self.df_seed_100more.shape[0]
         return count
+    
+    def show_ram(self):
+        pid = os.getpid()
+        p = psutil.Process(pid)         # 获取当前进程的pid
+        info = p.memory_full_info()     # 根据pid找到该进程，进而占到占用的内存值
+        memory = info.uss / 1024 / 1024
+        return memory
         
         
         

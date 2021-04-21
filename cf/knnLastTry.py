@@ -8,7 +8,7 @@ Created on Wed Apr  7 21:12:35 2021
 
 import pickle
 import os
-
+import psutil
 import pandas as pd
 
 from surprise import KNNBasic
@@ -21,10 +21,14 @@ from surprise.model_selection import cross_validate
 from surprise.model_selection import train_test_split
 
 from collections import defaultdict
+from time import time
+
 
 from classes.Mpd import Mpd
+from classes.statistics import Stat
 
 mpd = Mpd()
+stat = Stat()
 
 trainset = mpd.loadMpdTrainset()
 # testset = mpd.loadMpdTestset()
@@ -34,6 +38,10 @@ trainset = mpd.loadMpdTrainset()
 
 sim_options = {'name': 'cosine',
                'user_based': True}
+# 运行时间-开始
+start_time = time()
+# 运行内存-开始
+start_memory = stat.show_ram()
 
 algo = KNNBasic(sim_options=sim_options)
 # predictions = algo.test()
@@ -44,6 +52,11 @@ algo = KNNBasic(sim_options=sim_options)
 
 trainset, testset = train_test_split(trainset, test_size=0.25)
 predictions = algo.fit(trainset,).test(testset, verbose=True)
+# 运行时间-结束
+end_time = time()
+# 运行时间-结束
+end_memory = stat.show_ram()
+
 accuracy.rmse(predictions)
 
 def get_Iu(uid):
@@ -116,6 +129,16 @@ for uid, user_ratings in topNPredicted.items():
         
         df_result.to_csv(r'../data/result/knn/recommend_20K.csv', index=None)
         print("DONE.")  
+        
+        
+# 运行时间
+elapsed = end_time - start_time
+print(elapsed)
+
+
+# 运行内存
+print(f'一共占用{end_memory - start_memory}MB')
+
 
 
 

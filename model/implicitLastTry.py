@@ -12,11 +12,14 @@ import scipy.sparse as sparse
 import numpy as np
 import random
 import implicit
+from time import time
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import metrics
-from classes.Mpd import Mpd  
+from classes.Mpd import Mpd 
+from classes.statistics import Stat 
 
 mpd = Mpd()
+stat = Stat()
 
 df_dataset = mpd.loadMpdDataDf()
 
@@ -25,6 +28,11 @@ sparse_playlist_track = sparse.csr_matrix((df_dataset['rating'].astype(float), (
 
 print(sparse_track_playlist.shape)
 print(sparse_playlist_track.shape)
+
+# 运行时间-开始
+start_time = time()
+# 运行内存-开始
+start_memory = stat.show_ram()
 
 # 训练模型
 #  设置20个特征因子
@@ -50,7 +58,12 @@ scores = track_vecs.dot(track_vecs[tid]) / track_norms
 top_idx = np.argpartition(scores, -n_similar)[-n_similar:]
 #组成content_id和title的元组
 similar = sorted(zip(top_idx, scores[top_idx] / track_norms[tid]), key=lambda x: -x[1])
- 
+
+# 运行时间-结束
+end_time = time()
+# 运行时间-结束
+end_memory = stat.show_ram()
+
 print(playlist_vecs.shape)
 print(track_vecs.shape)
 
@@ -113,6 +126,16 @@ print(recommendations)
 
 recommendations.to_csv(r'../data/result/implicit/recommend_20K.csv', index=None)
 print("DONE.")
+
+
+
+# 运行时间
+elapsed = end_time - start_time
+print(elapsed)
+
+
+# 运行内存
+print(f'一共占用{end_memory - start_memory}MB')
 
 
 
