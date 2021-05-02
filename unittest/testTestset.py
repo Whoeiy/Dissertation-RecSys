@@ -10,5 +10,5 @@ from classes.dataExtract import extractor
 # data_json_path = "../../data_json"
 data_json_path = "../../data_json_small"
 dataset_type = 2
-output_type = 2
+output_type = 1
 extractor(data_json_path, dataset_type, output_type)
