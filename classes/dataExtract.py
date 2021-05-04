@@ -142,14 +142,20 @@ class extractor:
         
         
         self.df_testset = pd.DataFrame(columns=['A', 'B', 'C', 'D'])
+        self.df_trueset = pd.DataFrame(columns=['A', 'B', 'C', 'D'])
         for i in pid2pnt_group.keys(): 
             self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group[i]), 'test_type'] = i
-            df_chosen = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt_group[i])].groupby('pid').head(i)
+            df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt_group[i])].copy()
+            df_chosen = df_help.groupby('pid').head(i)
+            chosen_tid = df_chosen['tid'].tolist()
+            df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
             print("* only have ", i, ": ", df_chosen.shape[0])
             if i == 1:
                 self.df_testset = pd.DataFrame(df_chosen)
+                self.df_trueset = pd.DataFrame(df_true)
             else:
                 self.df_testset = self.df_testset.append(df_chosen)
+                self.df_trueset = self.df_trueset.append(df_true)
         print("* testset length: ", self.df_testset.shape[0])
 
         
@@ -168,10 +174,15 @@ class extractor:
         print("* chosen 100-playlists for testset: ", len(pid2pnt))
         print("* chosen playlists for testset: ", len(test_pid))
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt), 'test_type'] = 100
-        df_chosen = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt)].groupby('pid').head(100)
+        df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt)].copy()
+        df_chosen = df_help.groupby('pid').head(100)
+        chosen_tid = df_chosen['tid'].tolist()
         
+        df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
+        print('100: ', df_true.head())
         print('* only have 100:', df_chosen.shape[0])
         self.df_testset = self.df_testset.append(df_chosen)
+        self.df_trueset = self.df_trueset.append(df_true)
         print("* testset length: ", self.df_testset.shape[0])
         # 风险点：会改变track在歌单中的顺序，但是还有pos字段
         
@@ -194,6 +205,9 @@ class extractor:
         # zero seed
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['zero']), 'test_type'] = 0
         self.zero_seed_pid = pid2pnt_group['zero']
+        df_true = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(self.zero_seed_pid)].copy()
+        print('ZERO SEED: ', df_true.head())
+        self.df_trueset = self.df_trueset.append(df_true)
         
         # no tittle
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'name'] = ''
@@ -205,15 +219,16 @@ class extractor:
         
         # for output
         self.df_playlists_info_test = self.df_playlists_info_copy.loc[self.df_playlists_info['pid'].isin(self.test_pid)].copy()
-        self.df_playlist_tracks_test = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(self.test_pid)]
-        self.df_playlist_tracks_count_test = self.df_playlist_tracks_test.groupby(['pid', 'tid'], as_index=False)['rating'].count()      
+        self.df_playlist_tracks_test = self.df_testset
+        self.df_playlist_tracks_count_test = self.df_testset.groupby(['pid', 'tid'], as_index=False)['rating'].count()      
+        self.df_playlist_tracks_true = self.df_trueset.sort_values(by=['pid','pos'])
         
         # trainset: part of rawdata + testset
         print("******\n Generating the Trainset... \n******\n")
         self.df_playlists_info_train = self.df_playlists_info_copy.copy()
         
         df_pure_train = self.df_playlist_tracks.loc[~self.df_playlist_tracks['pid'].isin(self.test_pid)]
-        self.df_playlist_tracks_train = df_pure_train.append(self.df_testset)
+        self.df_playlist_tracks_train = df_pure_train.append(self.df_testset.loc[~self.df_testset['pid'].isin(self.zero_seed_pid)])
         self.df_playlist_tracks_count_train = self.df_playlist_tracks_train.groupby(['pid', 'tid'], as_index=False)['rating'].count()
                     
     def jsonToCSV(self, dataset_type):
@@ -238,8 +253,8 @@ class extractor:
             
             # testset
             self.df_playlists_info_test.to_csv(csv_path + 'testset/playlists_info.csv', index=None)
-            self.df_playlist_tracks_count_test.to_csv(csv_path + 'testset/playlist_tracks.csv')
-
+            self.df_playlist_tracks_count_test.to_csv(csv_path + 'testset/playlist_tracks.csv', index=None)
+            self.df_playlist_tracks_true.to_csv(csv_path + 'testset/playlist_tracks_true.csv', index=None)
         
     def jsonToHDF5(self, dataset_type):
         

@@ -21,7 +21,10 @@ from classes.statistics import Stat
 mpd = Mpd()
 stat = Stat()
 
-df_dataset = mpd.loadMpdDataDf()
+pntPath_hdf5 = '../data/hdf5/real/trainset/playlist_tracks.hdf5'
+trackPath_hdf5 = '../data/hdf5/realplaylist_tracks.hdf5'
+
+df_dataset = mpd.loadMpdDataDf(pntPath_hdf5)
 
 sparse_track_playlist = sparse.csr_matrix((df_dataset['rating'].astype(float), (df_dataset['item'], df_dataset['user'])))
 sparse_playlist_track = sparse.csr_matrix((df_dataset['rating'].astype(float), (df_dataset['user'], df_dataset['item'])))
@@ -96,7 +99,7 @@ def recommend(pid, sparse_playlist_track, playlist_vecs, track_vecs, num_tracks=
     track_idx = np.argsort(recommend_vector)[::-1][:num_tracks]
     
     # 定义两个list用于存储文章的title和推荐分数ccccccc。
-    df_tid2tname = mpd.get_tid2tname_df()
+    df_tid2tname = mpd.get_tid2tname_df(trackPath_hdf5)
     tnames = []
     tids = []
     scores = []

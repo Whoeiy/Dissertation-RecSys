@@ -26,7 +26,7 @@ class getData:
         
         return df_playlists
     
-    def getTracks(self):
+    def getTracks(self, tracksPath_hdf5):
         # Look for files relative to the directory we are running from
         os.chdir(os.path.dirname(sys.argv[0]))
         
@@ -35,7 +35,7 @@ class getData:
         self.track_col = ['track_uri', 'track_name', 'artist_uri', 'artist_name', 'album_uri', 'album_name', 'duration_ms', 'tid']
         
         # using vaex
-        df_vaex = vaex.open(self.tracksPath_hdf5)
+        df_vaex = vaex.open(tracksPath_hdf5)
         df_tracks = df_vaex.to_pandas_df(self.track_col)
         
         return df_tracks

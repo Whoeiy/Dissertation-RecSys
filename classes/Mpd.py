@@ -97,7 +97,7 @@ class Mpd:
         # cross_validate(BaselineOnly(), ratingsDataset, verbose=True)
         return trainDataset
     
-    def loadMpdDataDf(self):
+    def loadMpdDataDf(self, pntPath_hdf5):
         # Look for files relative to the directory we are running from
         os.chdir(os.path.dirname(sys.argv[0]))
         
@@ -107,7 +107,7 @@ class Mpd:
         
         
         # using vaex
-        df_vaex = vaex.open(self.pntPath_hdf5)
+        df_vaex = vaex.open(pntPath_hdf5)
         df_pnt = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         # df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
@@ -139,14 +139,14 @@ class Mpd:
             rank += 1
         return rankings
     
-    def get_tid2tname_df(self):
+    def get_tid2tname_df(self, path):
         # df_vaex = vaexc.open(self.trackPath_hdf5)
         # df_vaex = vaex.open(self.pntPath_hdf5)
         # df_track = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         
-        df_tracks = getData().getTracks()
+        df_tracks = getData().getTracks(path)
         print(df_tracks.head(10))
-        df_tid2tname = df_tracks[['tid', 'track_name']]
+        df_tid2tname = df_tracks[['tid', 'track_name', 'artist_name']]
         
         return df_tid2tname
         
