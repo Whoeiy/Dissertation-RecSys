@@ -211,7 +211,7 @@ class extractor:
         
         # no tittle
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'name'] = ''
-        self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'test_type'] = 'nt'
+        self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'test_type'] = 2
         df_chosen = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt_group['nt'])]
         print("* no tittle: ", df_chosen.shape[0])
         self.df_testset = self.df_testset.append(df_chosen)
@@ -259,7 +259,8 @@ class extractor:
     def jsonToHDF5(self, dataset_type):
         
         if dataset_type == 1:       # rawdata_set
-            hdf5_path = "../data/hdf5/rawdata"
+        
+            hdf5_path = "../data/hdf5/rawdata/"
             # plyliscts_info
             vaex_df = vaex.from_pandas(self.df_playlists_info, copy_index=False)
             vaex_df.export_hdf5(hdf5_path+'playlists_info.hdf5')
@@ -270,6 +271,7 @@ class extractor:
             vaex_df = vaex.from_pandas(self.df_playlist_tracks_count, copy_index=False)
             vaex_df.export_hdf5(hdf5_path+'playlist_tracks.hdf5')
         elif dataset_type == 2:     # test_train_set
+        
             hdf5_path = '../data/hdf5/real/'
             
             # train
@@ -289,15 +291,15 @@ class extractor:
             # playlists_info
             vaex_df = vaex.from_pandas(self.df_playlists_info_test, copy_index=False)
             vaex_df.export_hdf5(hdf5_path+'testset/playlists_info.hdf5')
-            # tracks useless
-            # vaex_df = vaex.from_pandas(self.df_tracks_train, copy_index=False)
-            # vaex_df.export_hdf5(hdf5_path+'trainset/tracks.hdf5') 
             
-            # playlists_tracks
+            # playlist_tracks
             vaex_df = vaex.from_pandas(self.df_playlist_tracks_count_test, copy_index=False)
             vaex_df.export_hdf5(hdf5_path+'testset/playlist_tracks.hdf5')
-                
-
+            
+            # playlist_tracks_true
+            vaex_df = vaex.from_pandas(self.df_playlist_tracks_true, copy_index=False)
+            vaex_df.export_hdf5(hdf5_path+'testset/playlist_tracks_true.hdf5')
+            
 
         
 

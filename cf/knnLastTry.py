@@ -27,10 +27,13 @@ from time import time
 from classes.Mpd import Mpd
 from classes.statistics import Stat
 
+pntPath_hdf5 = '../data/hdf5/real/trainset/playlist_tracks.hdf5'
+trackPath_hdf5 = '../data/hdf5/real/tracks.hdf5'
+
 mpd = Mpd()
 stat = Stat()
 
-trainset = mpd.loadMpdTrainset()
+trainset = mpd.loadMpdTrainset(pntPath_hdf5)
 # testset = mpd.loadMpdTestset()
 
 # trainset = trainset.build_full_trainset()
@@ -114,7 +117,7 @@ topNPredicted = get_top_n(predictions, n=20)
 
 
     # 定义两个list用于存储文章的title和推荐分数ccccccc。
-df_tid2tname = mpd.get_tid2tname_df()
+df_tid2tname = mpd.get_tid2tname_df(trackPath_hdf5)
 df_result = pd.DataFrame(columns=['track_name', 'tid', 'score'])
 
 for uid, user_ratings in topNPredicted.items():

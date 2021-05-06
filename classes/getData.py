@@ -14,17 +14,23 @@ class getData:
     tracksPath_hdf5 = '../data/hdf5_500K/tracks.hdf5'
     playlistsPath_hdf5 = '../data/hdf5/playlists_info.hdf5'
     
-    def getPlaylists(self):
+    def getPlaylists(self, retype, playlistsPath_hdf5):
         # Look for files relative to the directory we are running from
         os.chdir(os.path.dirname(sys.argv[0]))
     
-        self.playlist_col = ['pid', 'name', 'collaborative', 'modified_at', 'num_tracks', 'num_albums', 'num_followers', 'num_edits', 'duration_ms', 'num_artists']
+        self.playlist_col = ['pid', 'name', 'collaborative', 'modified_at', 'num_tracks', 'num_albums', 'num_followers', 'num_edits', 'duration_ms', 'num_artists', 'test_type']
         
         # using vaex
-        df_vaex = vaex.open(self.playlistsPath_hdf5)
+        df_vaex = vaex.open(playlistsPath_hdf5)
         df_playlists = df_vaex.to_pandas_df(self.playlist_col)
         
-        return df_playlists
+        if retype == 1:
+            exclude = [0,2]
+            res = df_playlists.loc[~df_playlists['test_type'].isin(exclude), 'pid'].tolist()
+            print("!!", len(res))
+            return res
+        if retype == 0:
+            return df_playlists
     
     def getTracks(self, tracksPath_hdf5):
         # Look for files relative to the directory we are running from
@@ -39,5 +45,14 @@ class getData:
         df_tracks = df_vaex.to_pandas_df(self.track_col)
         
         return df_tracks
+    
+    def getResultDf(self, path):
+        
+        os.chdir(os.path.dirname(sys.argv[0]))
+        
+        df_vaex = vaex.open(path)
+        df_res = df_vaex.to_pandas_df()
+        
+        return df_res
     
     

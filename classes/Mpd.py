@@ -77,7 +77,7 @@ class Mpd:
         
             end
         '''
-    def loadMpdTrainset(self):
+    def loadMpdTrainset(self, pntPath_hdf5):
         # Look for files relative to the directory we are running from
         os.chdir(os.path.dirname(sys.argv[0]))
         
@@ -85,7 +85,7 @@ class Mpd:
         self.tname_to_tid = {}
         
         # using vaex
-        df_vaex = vaex.open(self.pntPath_hdf5)
+        df_vaex = vaex.open(pntPath_hdf5)
         df_pnt = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         # df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
@@ -149,4 +149,13 @@ class Mpd:
         df_tid2tname = df_tracks[['tid', 'track_name', 'artist_name']]
         
         return df_tid2tname
+    
+    def get_test_pid(self, path):
+        list_test_pid = getData().getPlaylists(1, path)
+        return list_test_pid
+    
+    
+    def get_res_df(self, path):
+        df_res = getData().getResultDf(path)
+        return df_res
         
