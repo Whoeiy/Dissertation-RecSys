@@ -55,11 +55,19 @@ for pid in list_pid:
     ndcg.append(ndcg_res)
 
 all_ndcg = sum(ndcg) / n
-print('\nndcg', all_ndcg)
 
-print('\nr-precision:', all_rprec)
+print('======')
+print('评估(evaluation)')
+print('======')
+print('测试集记录数: ', n)
+print('准确度(precision): ', all_rprec)
+print('NDCG: ', all_ndcg)
+# print('\nndcg', all_ndcg)
 
-print(df_rec.shape[0])
+# print('\nr-precision:', all_rprec)
+print('======')
+
+# print(df_rec.shape[0])
 
     
    
