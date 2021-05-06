@@ -87,6 +87,7 @@ class Mpd:
         # using vaex
         df_vaex = vaex.open(pntPath_hdf5)
         df_pnt = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
+        df_pnt[['pid', 'tid', 'rating']].astype('int')
         # df = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         # df_pnt = pd.read_csv(self.pntPath, usecols=['pid', 'tid', 'rating'])
         df_pnt.columns = ['user', 'item', 'rating']
@@ -145,7 +146,7 @@ class Mpd:
         # df_track = df_vaex.to_pandas_df(['pid', 'tid', 'rating'])
         
         df_tracks = getData().getTracks(path)
-        print(df_tracks.head(10))
+        # print(df_tracks.head(10))
         df_tid2tname = df_tracks[['tid', 'track_name', 'artist_name']]
         
         return df_tid2tname

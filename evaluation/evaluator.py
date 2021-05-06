@@ -18,7 +18,7 @@ test_pidPath_hdf5 = '../data/hdf5/real/testset/playlists_info.hdf5'
 
 mpd = Mpd()
 
-n = 1000
+n = 70
 # get res df
 df_rec = mpd.get_res_df(rec_res)
 rec_res = '../data/result/implicit/origin/recommend_100K_500.hdf5'
@@ -56,17 +56,18 @@ for pid in list_pid:
 
 all_ndcg = sum(ndcg) / n
 
-print('======')
+print('\n======')
 print('评估(evaluation)')
-print('======')
-print('测试集记录数: ', n)
-print('准确度(precision): ', all_rprec)
-print('NDCG: ', all_ndcg)
+print('======\n')
+print('* 测试集播放列表数: ', n)
+print('* 准确度(precision): ', all_rprec)
+print('* NDCG: ', all_ndcg)
 # print('\nndcg', all_ndcg)
 
 # print('\nr-precision:', all_rprec)
-print('======')
-
+print('\n=======')
+print("DONE")
+print('=======\n')
 # print(df_rec.shape[0])
 
     

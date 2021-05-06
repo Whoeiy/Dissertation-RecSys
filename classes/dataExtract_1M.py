@@ -16,10 +16,14 @@ import time
 class extractor:
     
     '''
-    generate a small train data set(just for debug)
+    extractor类：生成训练用数据集
     '''
     def __init__(self, data_json_path, dataset_type, output_type):
     # def __init__(self, data_json_path, save_type, save_dir, last_slice_tid):
+        
+        print('\n=======')
+        print('生成数据集(extractor类)')
+        print('=======\n')
         
         self.playlist_col = ['pid', 'name', 'collaborative', 'modified_at', 'num_tracks', 'num_albums', 'num_followers', 'num_edits', 'duration_ms', 'num_artists']
         self.track_col = ['track_uri', 'track_name', 'artist_uri', 'artist_name', 'album_uri', 'album_name', 'duration_ms']
@@ -42,7 +46,7 @@ class extractor:
         # self.last_slice_tid = last_slice_tid
         # self.this_slice_tid = int()
         
-        print("type of the generating dataset: " + self.dataset_type[dataset_type])
+        print("- 生成数据集的形式: " + self.dataset_type[dataset_type])
         # 查看data_json目录下所有的文件，过滤掉隐藏文件
         for root, dirs, files in os.walk(data_json_path):
             files = [f for f in files if not f[0] == '.']
@@ -53,7 +57,7 @@ class extractor:
                 # 加载json数据文件
                 with open(fullpath, encoding="utf-8") as json_obj:
                     mpd_slice = json.load(json_obj)
-                    print("processing file: "+str(filename))
+                    print("- 读取文件: "+str(filename))
                     self.rawdata(mpd_slice)
 
         
@@ -65,11 +69,11 @@ class extractor:
             
         if output_type == 1:
             # csv
-            print("writing into the csv file...")
+            print("- 写入csv文件...")
             self.jsonToCSV(dataset_type)
         else:
             # hdf5
-            print("writing into the hdf5 file...")
+            print("- 写入hdf5文件...")
             self.jsonToHDF5(dataset_type)
         print("done.")
         
@@ -105,7 +109,7 @@ class extractor:
         self.df_tracks = pd.DataFrame(self.data_tracks, columns=self.track_col)
         # df_tracks['tid'] = self.last_slice_tid + df_tracks.index
         self.df_tracks['tid'] = self.df_tracks.index
-        print(self.df_tracks['tid'])
+        # print(self.df_tracks['tid'])
         
         track_uri2tid = self.df_tracks.set_index('track_uri').tid
         
@@ -124,19 +128,22 @@ class extractor:
     def test_train_set(self):
         
         # testset size: 10K
-        print("******\n Generating the Testset... \n******\n")
+        print("****** 生成测试集 ******")
         
         # >25
-        print("** >25(5000) **")
+        print("** seed>25(500 playlists) **")
         df_seed_25more = self.df_playlists_info.loc[self.df_playlists_info.num_tracks > 25]
         # 随机选择1000个包含100首以上歌曲的playlist
-        print("* playlists within more than 25 tracks: ", df_seed_25more.shape[0])
+        print("* 播放列表数（数据集中含25+首歌曲）: ", df_seed_25more.shape[0])
         df_test_p = df_seed_25more.sample(n=5000, replace=False, random_state=1)
         pid2pnt = list(set(df_test_p['pid'].tolist()))
         test_pid = pid2pnt
         
-        print("* chosen 25-playlists for testset: ", len(pid2pnt))
-        print("* chosen playlists for testset: ", len(test_pid))  
+        # print("* 播放列表数（测试集中含25首歌曲）: ", len(pid2pnt))
+        # print("* 播放列表数（测试集）: ", len(test_pid))  
+        print("\n* 随机选择5000个含25+首歌曲的播放列表")
+        print("* 分别生成1000个含1首歌曲、1000个含5首歌曲、1000个含10首歌曲、2000个含25首歌曲的播放列表\n")
+        print("* 选择前n首歌曲，播放列表剩余的歌曲作为测试集的实际结果\n")
         
         pid2pnt_group = {1:pid2pnt[0:1000], 5:pid2pnt[1000:2000], 10:pid2pnt[2000:3000], 25:pid2pnt[3000:]}
         
@@ -157,30 +164,34 @@ class extractor:
             # df_true = df_help.loc[(~df_help[index].isin(chosen_pid) and df_help['tid'].isin(chosen_tid))]
         
             # df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
-            print("* only have ", i, ": ", df_chosen.shape[0])
+            print("* 播放列表数（测试集中含", i, "首歌曲）: ", df_chosen.shape[0])
+            # print("* only have ", i, ": ", df_chosen.shape[0])
             if i == 1:
                 self.df_testset = pd.DataFrame(df_chosen)
                 self.df_trueset = pd.DataFrame(df_true)
             else:
                 self.df_testset = self.df_testset.append(df_chosen)
                 self.df_trueset = self.df_trueset.append(df_true)
-        print("* testset length: ", self.df_testset.shape[0])
+        # print("* testset length: ", self.df_testset.shape[0])
+        print("* 播放列表数（测试集）: ", self.df_testset.shape[0]) 
 
         
         
         # >100
-        print("** >100(2000) **")
+        print("** seed>100(2000 playlists) **")
         df_seed_100more = self.df_playlists_info.loc[~self.df_playlists_info['pid'].isin(test_pid)].loc[self.df_playlists_info.num_tracks > 100]
         # df_seed_100more = self.df_playlists_info.loc[self.df_playlists_info.num_tracks > 100]
         
         # 随机选择1000个包含100首以上歌曲的playlist
-        print("* playlists within more than 100 tracks: ", df_seed_100more.shape[0])
+        print("* 播放列表数（数据集中含100+首歌曲）: ", df_seed_100more.shape[0])
         df_test_p = df_seed_100more.sample(n=2000, replace=False, random_state=1)
         pid2pnt = list(set(df_test_p['pid'].tolist()))
         test_pid.extend(pid2pnt)
                
-        print("* chosen 100-playlists for testset: ", len(pid2pnt))
-        print("* chosen playlists for testset: ", len(test_pid))
+        # print("* chosen 100-playlists for testset: ", len(pid2pnt))
+        # print("* chosen playlists for testset: ", len(test_pid))
+        print("\n* 随机选择2000个含100+首歌曲的播放列表")
+        print("* 生成2000个含100首歌曲的播放列表\n")
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt), 'test_type'] = 100
         df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt)].copy()
         all_index = df_help.index.tolist()
@@ -192,25 +203,27 @@ class extractor:
         true_index = list(set(all_index) - set(chosen_index))
         df_true = df_help.loc[[k for k in true_index]]        
         # df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
-        print('100: ', df_true.head())
-        print('* only have 100:', df_chosen.shape[0])
+        # print('100: ', df_true.head())
+        print('* 播放列表数（测试集中含100首歌曲）:', df_chosen.shape[0])
         self.df_testset = self.df_testset.append(df_chosen)
         self.df_trueset = self.df_trueset.append(df_true)
-        print("* testset length: ", self.df_testset.shape[0])
-        # 风险点：会改变track在歌单中的顺序，但是还有pos字段
+        print("* 播放列表数（测试集）: ", self.df_testset.shape[0])
         
         
         # random
-        print("** no tittle(2000) & 0 seed(1000) **")
+        print("** no tittle(2000 playlists) & 0 seed(1000 playlists) **")
         df_rest = self.df_playlists_info.loc[~self.df_playlists_info['pid'].isin(test_pid)].loc[self.df_playlists_info.num_tracks > 0]
         # 随机选择1000个包含100首以上歌曲的playlist
-        print("* rest playlists: ", df_rest.shape[0])
+        print("* 播放列表数（数据集中剩余的）: ", df_rest.shape[0])
         df_test_p = df_rest.sample(n=3000, replace=False, random_state=1)
         pid2pnt = list(set(df_test_p['pid'].tolist()))
         test_pid.extend(pid2pnt)
          
-        print("* chosen rest-playlists for testset: ", len(pid2pnt))
-        print("* chosen playlists for testset: ", len(test_pid)) 
+        # print("* chosen rest-playlists for testset: ", len(pid2pnt))
+        # print("* chosen playlists for testset: ", len(test_pid)) 
+        print("\n* 随机选择3000个剩余的播放列表")
+        print("* 分别生成1000个含0首歌曲、2000个没有标题的播放列表\n")
+        
         self.test_pid = test_pid
         
         pid2pnt_group = {'zero':pid2pnt[0:1000], 'nt':pid2pnt[1000:]}
@@ -219,16 +232,16 @@ class extractor:
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['zero']), 'test_type'] = 0
         self.zero_seed_pid = pid2pnt_group['zero']
         df_true = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(self.zero_seed_pid)].copy()
-        print('ZERO SEED: ', df_true.head())
+        print('播放列表数（测试集中不含歌曲的）: ', len(self.zero_seed_pid))
         self.df_trueset = self.df_trueset.append(df_true)
         
         # no tittle
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'name'] = ''
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group['nt']), 'test_type'] = 2
         df_chosen = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt_group['nt'])]
-        print("* no tittle: ", df_chosen.shape[0])
+        print("* 播放列表数（测试集中没有标题的）: ", df_chosen.shape[0])
         self.df_testset = self.df_testset.append(df_chosen)
-        print("* testset length: ", self.df_testset.shape[0])
+        print("* 播放列表数（测试集）: ", self.df_testset.shape[0])
         
         # for output
         self.df_playlists_info_test = self.df_playlists_info_copy.loc[self.df_playlists_info['pid'].isin(self.test_pid)].copy()
@@ -237,13 +250,17 @@ class extractor:
         self.df_playlist_tracks_true = self.df_trueset.sort_values(by=['pid','pos'])
         
         # trainset: part of rawdata + testset
-        print("******\n Generating the Trainset... \n******\n")
+        print("****** 生成训练集 ******")
+        print("* 将剩余的数据集与测试集选取的数据合并为训练集\n")
         self.df_playlists_info_train = self.df_playlists_info_copy.copy()
         
         df_pure_train = self.df_playlist_tracks.loc[~self.df_playlist_tracks['pid'].isin(self.test_pid)]
         self.df_playlist_tracks_train = df_pure_train.append(self.df_testset.loc[~self.df_testset['pid'].isin(self.zero_seed_pid)])
         self.df_playlist_tracks_count_train = self.df_playlist_tracks_train.groupby(['pid', 'tid'], as_index=False)['rating'].count()
-                    
+        
+        print("****** 完成 ******")        
+
+          
     def jsonToCSV(self, dataset_type):
         
         if dataset_type == 1:       # rawdata_set
