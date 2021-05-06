@@ -155,7 +155,7 @@ print(recommendations)
 list_pid = mpd.get_test_pid(test_pidPath_hdf5)
 print(len(list_pid))
 
-list_pid = list_pid[:100]
+list_pid = list_pid[500:1000]
     
 
 
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     
     # to hdf5
     vaex_df = vaex.from_pandas(recommendations, copy_index=False)
-    vaex_df.export_hdf5('../data/result/implicit/recommend_100K_100.hdf5')
+    vaex_df.export_hdf5('../data/result/implicit/origin/recommend_100K_500.hdf5')
     print("DONE.")
     
     

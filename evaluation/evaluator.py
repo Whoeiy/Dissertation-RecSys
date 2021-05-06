@@ -11,16 +11,19 @@ import math
 
 
 
-rec_res = '../data/result/implicit/recommend_100K_100.hdf5'
+rec_res = '../data/result/implicit/origin/recommend_100K_0.hdf5'
 true_res = '../data/hdf5/real/testset/playlist_tracks_true.hdf5'
 
 test_pidPath_hdf5 = '../data/hdf5/real/testset/playlists_info.hdf5'
 
 mpd = Mpd()
 
-n = 100
+n = 1000
 # get res df
 df_rec = mpd.get_res_df(rec_res)
+rec_res = '../data/result/implicit/origin/recommend_100K_500.hdf5'
+df_rec = df_rec.append(mpd.get_res_df(rec_res))
+
 df_true = mpd.get_res_df(true_res)
 # get pid list
 list_pid = mpd.get_test_pid(test_pidPath_hdf5)
@@ -31,6 +34,9 @@ rprec = list()
 for pid in list_pid:
     rec_tid = df_rec.loc[df_rec['pid'] == pid, 'tid'].tolist()
     true_tid = df_true.loc[df_true['pid'] == pid, 'tid'].tolist()
+    if pid == 107970:
+        print(pid, 'rec_tid', rec_tid)
+        print(pid, 'true_tid', true_tid)
     rp_res = eval.r_precision(rec_tid, true_tid)
     if math.isnan(rp_res):
         rp_res = 0.0
@@ -52,6 +58,8 @@ all_ndcg = sum(ndcg) / n
 print('\nndcg', all_ndcg)
 
 print('\nr-precision:', all_rprec)
+
+print(df_rec.shape[0])
 
     
    

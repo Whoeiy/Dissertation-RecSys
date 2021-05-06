@@ -146,9 +146,17 @@ class extractor:
         for i in pid2pnt_group.keys(): 
             self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt_group[i]), 'test_type'] = i
             df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt_group[i])].copy()
+            all_index = df_help.index.tolist()
             df_chosen = df_help.groupby('pid').head(i)
-            chosen_tid = df_chosen['tid'].tolist()
-            df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
+            chosen_index = df_help.groupby('pid').head(i).index.tolist()
+            print(len(chosen_index))
+            # chosen_tid = df_chosen['tid'].tolist()
+            
+            true_index = list(set(all_index) - set(chosen_index))
+            df_true = df_help.loc[[k for k in true_index]]
+            # df_true = df_help.loc[(~df_help[index].isin(chosen_pid) and df_help['tid'].isin(chosen_tid))]
+        
+            # df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
             print("* only have ", i, ": ", df_chosen.shape[0])
             if i == 1:
                 self.df_testset = pd.DataFrame(df_chosen)
@@ -175,10 +183,15 @@ class extractor:
         print("* chosen playlists for testset: ", len(test_pid))
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt), 'test_type'] = 100
         df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt)].copy()
+        all_index = df_help.index.tolist()
         df_chosen = df_help.groupby('pid').head(100)
-        chosen_tid = df_chosen['tid'].tolist()
+        chosen_index = df_help.groupby('pid').head(100).index.tolist()
+        print(len(chosen_index))
+        # chosen_tid = df_chosen['tid'].tolist()
         
-        df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
+        true_index = list(set(all_index) - set(chosen_index))
+        df_true = df_help.loc[[k for k in true_index]]        
+        # df_true = df_help.loc[~df_help['tid'].isin(chosen_tid)]
         print('100: ', df_true.head())
         print('* only have 100:', df_chosen.shape[0])
         self.df_testset = self.df_testset.append(df_chosen)

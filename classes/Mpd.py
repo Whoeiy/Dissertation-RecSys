@@ -158,4 +158,8 @@ class Mpd:
     def get_res_df(self, path):
         df_res = getData().getResultDf(path)
         return df_res
+    
+    def get_test_playlists(self, path):
+        df_test_playlists = getData().getPlaylists(0, path)
+        return df_test_playlists
         
