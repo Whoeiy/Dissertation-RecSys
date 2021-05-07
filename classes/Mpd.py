@@ -96,7 +96,7 @@ class Mpd:
         trainDataset = Dataset.load_from_df(df_pnt[['user', 'item', 'rating']], reader)
         
         # cross_validate(BaselineOnly(), ratingsDataset, verbose=True)
-        return trainDataset
+        return trainDataset.build_full_trainset()
     
     def loadMpdDataDf(self, pntPath_hdf5):
         # Look for files relative to the directory we are running from

@@ -5,12 +5,13 @@ Created on Wed Apr  7 15:34:46 2021
 
 @author: whoeiy
 """
-# from classes.dataExtract_1M import extractor
-from classes.dataExtract_100K import extractor
+from classes.dataExtract_1M import extractor
+# from classes.dataExtract_100K import extractor
 
 # 原生数据 - json格式
-# data_json_path = "../../data_json_20K"  # 20K
-data_json_path = "../../data_json_100K" # 100K
+data_json_path = "../../data_json_20K"  # 20K
+# data_json_path = "../../data_json_50K"  # 50K
+# data_json_path = "../../data_json_100K" # 100K
 # data_json_path = "../../data_json"
 
 '''

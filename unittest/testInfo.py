@@ -25,3 +25,22 @@ df = mpd.get_res_df(true_res)
 temp = df.loc[df['pid'] == 107970]
 print(temp)
 '''
+
+pntPath_hdf5 = '../data/hdf5/real/trainset/playlist_tracks.hdf5'
+trackPath_hdf5 = '../data/hdf5/real/tracks.hdf5'
+    
+test_pidPath_hdf5 = '../data/hdf5/real/testset/playlists_info.hdf5'
+    
+df_dataset = mpd.loadMpdDataDf(pntPath_hdf5)
+print(df_dataset.loc[df_dataset['item']==71215])
+print(df_dataset.loc[df_dataset['user']==3])
+
+list_pid = mpd.get_test_pid(test_pidPath_hdf5)
+print(list_pid[:5])
+
+
+tids = df_dataset.loc[df_dataset['user']==195, 'item'].tolist()
+
+print(tids)
+temp = df_dataset['item'].unique().tolist()
+print(len(temp))

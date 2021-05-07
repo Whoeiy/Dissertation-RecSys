@@ -138,7 +138,7 @@ class extractor:
         print("\n****** 生成测试集 ******\n")
         
         # >25
-        print("** seed>25(500 playlists) **")
+        print("** seed>25(50 playlists) **")
         df_seed_25more = self.df_playlists_info.loc[self.df_playlists_info.num_tracks > 25]
         # 随机选择1000个包含100首以上歌曲的playlist
         print("* 播放列表数（数据集中含25+首歌曲）: ", df_seed_25more.shape[0])
@@ -148,8 +148,8 @@ class extractor:
         
         # print("* 播放列表数（测试集中含25首歌曲）: ", len(pid2pnt))
         # print("* 播放列表数（测试集）: ", len(test_pid))  
-        print("- 随机选择5000个含25+首歌曲的播放列表")
-        print("- 分别生成1000个含1首歌曲、1000个含5首歌曲、1000个含10首歌曲、2000个含25首歌曲的播放列表")
+        print("- 随机选择50个含25+首歌曲的播放列表")
+        print("- 分别生成10个含1首歌曲、10个含5首歌曲、10个含10首歌曲、20个含25首歌曲的播放列表")
         print("- 选择前n首歌曲，播放列表剩余的歌曲作为测试集的实际结果")
         
         pid2pnt_group = {1:pid2pnt[0:10], 5:pid2pnt[10:20], 10:pid2pnt[20:30], 25:pid2pnt[30:]}
@@ -185,7 +185,7 @@ class extractor:
         
         
         # >100
-        print("\n** seed>100(2000 playlists) **")
+        print("\n** seed>100(20 playlists) **")
         df_seed_100more = self.df_playlists_info.loc[~self.df_playlists_info['pid'].isin(test_pid)].loc[self.df_playlists_info.num_tracks > 100]
         # df_seed_100more = self.df_playlists_info.loc[self.df_playlists_info.num_tracks > 100]
         
@@ -197,8 +197,8 @@ class extractor:
                
         # print("* chosen 100-playlists for testset: ", len(pid2pnt))
         # print("* chosen playlists for testset: ", len(test_pid))
-        print("- 随机选择2000个含100+首歌曲的播放列表")
-        print("- 生成2000个含100首歌曲的播放列表")
+        print("- 随机选择20个含100+首歌曲的播放列表")
+        print("- 生成20个含100首歌曲的播放列表")
         self.df_playlists_info_copy.loc[self.df_playlists_info_copy['pid'].isin(pid2pnt), 'test_type'] = 100
         df_help = self.df_playlist_tracks.loc[self.df_playlist_tracks['pid'].isin(pid2pnt)].copy()
         all_index = df_help.index.tolist()
@@ -218,7 +218,7 @@ class extractor:
         
         
         # random
-        print("\n** no tittle(2000 playlists) & 0 seed(1000 playlists) **")
+        print("\n** no tittle(20 playlists) & 0 seed(10 playlists) **")
         df_rest = self.df_playlists_info.loc[~self.df_playlists_info['pid'].isin(test_pid)].loc[self.df_playlists_info.num_tracks > 0]
         # 随机选择1000个包含100首以上歌曲的playlist
         print("* 播放列表数（数据集中剩余的）: ", df_rest.shape[0])
@@ -228,8 +228,8 @@ class extractor:
          
         # print("* chosen rest-playlists for testset: ", len(pid2pnt))
         # print("* chosen playlists for testset: ", len(test_pid)) 
-        print("- 随机选择3000个剩余的播放列表")
-        print("- 分别生成1000个含0首歌曲、2000个没有标题的播放列表")
+        print("- 随机选择30个剩余的播放列表")
+        print("- 分别生成10个含0首歌曲、20个没有标题的播放列表")
         
         self.test_pid = test_pid
         

@@ -11,7 +11,8 @@ import math
 
 
 
-rec_res = '../data/result/implicit/origin/recommend_100K_0.hdf5'
+rec_res = '../data/result/implicit/origin/recommend_100K_200.hdf5'
+# rec_res = '../data/result/knn/origin/recommend_50K_ucf.hdf5'
 true_res = '../data/hdf5/real/testset/playlist_tracks_true.hdf5'
 
 test_pidPath_hdf5 = '../data/hdf5/real/testset/playlists_info.hdf5'
@@ -21,8 +22,8 @@ mpd = Mpd()
 n = 70
 # get res df
 df_rec = mpd.get_res_df(rec_res)
-rec_res = '../data/result/implicit/origin/recommend_100K_500.hdf5'
-df_rec = df_rec.append(mpd.get_res_df(rec_res))
+# rec_res = '../data/result/implicit/origin/recommend_100K_500.hdf5'
+# df_rec = df_rec.append(mpd.get_res_df(rec_res))
 
 df_true = mpd.get_res_df(true_res)
 # get pid list
@@ -57,7 +58,7 @@ for pid in list_pid:
 all_ndcg = sum(ndcg) / n
 
 print('\n======')
-print('评估(evaluation)')
+print('评估(evaluation)：WRMF')
 print('======\n')
 print('* 测试集播放列表数: ', n)
 print('* 准确度(precision): ', all_rprec)
