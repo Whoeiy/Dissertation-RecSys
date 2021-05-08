@@ -49,7 +49,7 @@ def get_similar_users_recommendations(pid, n=500):
     
     
     cur_tid = df_dataset.loc[df_dataset['user']==pid, 'item'].tolist()
-    #把评分为5的电影加入推荐列表
+    #
     for user in neighbors_uid:
         if len(rec) > n:
             break
@@ -114,7 +114,7 @@ start_time = time()
 # 运行内存-开始
 start_memory = stat.show_ram()
 print("- 模型训练中...")
-# 考虑基线评级的协同过滤算法
+
 algo = KNNBaseline(sim_option = user_based_sim_option)
 # 拟合训练集
 algo.fit(trainset)

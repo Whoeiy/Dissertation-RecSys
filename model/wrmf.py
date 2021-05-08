@@ -111,7 +111,7 @@ start_memory = stat.show_ram()
 alpha = 40
 data = (sparse_track_playlist * alpha).astype('double')
     
-
+print("- 模型训练中...")
 model = implicit.als.AlternatingLeastSquares(factors=20, regularization=0.1, iterations=50)
 model.fit(data)
 

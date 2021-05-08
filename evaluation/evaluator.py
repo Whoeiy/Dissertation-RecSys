@@ -6,16 +6,18 @@ Created on Wed May  5 11:22:48 2021
 """
 
 from classes.Mpd import Mpd
+from classes.getData import getData
 import eval_algo as eval
 import math
 
 
 
-rec_res = '../data/result/implicit/origin/recommend_100K_200.hdf5'
-# rec_res = '../data/result/knn/origin/recommend_50K_ucf.hdf5'
+# rec_res = '../data/result/implicit/origin/recommend_100K_200.hdf5'
+rec_res = '../data/result/knn/origin/recommend_50K_ucf.hdf5'
 true_res = '../data/hdf5/real/testset/playlist_tracks_true.hdf5'
 
 test_pidPath_hdf5 = '../data/hdf5/real/testset/playlists_info.hdf5'
+tracksPath_hdf5 = '../data/hdf5/real/tracks.hdf5'
 
 mpd = Mpd()
 
@@ -30,6 +32,12 @@ df_true = mpd.get_res_df(true_res)
 list_pid = mpd.get_test_pid(test_pidPath_hdf5)
 list_pid = list_pid[:n]
 
+df_track = getData().getTracks(tracksPath_hdf5)
+df_test_p = df_track.sample(n=500, replace=False, random_state=1)
+tid_list = df_test_p['tid'].tolist()
+print(len(tid_list))
+# print(tid_list[:100])
+
 
 rprec = list()
 for pid in list_pid:
@@ -38,7 +46,11 @@ for pid in list_pid:
     if pid == 107970:
         print(pid, 'rec_tid', rec_tid)
         print(pid, 'true_tid', true_tid)
-    rp_res = eval.r_precision(rec_tid, true_tid)
+    # rp_res = eval.r_precision(rec_tid, true_tid)
+    # print(rec_tid)
+    df_test_p = df_track.sample(n=500, replace=False, random_state=1)
+    tid_list = df_test_p['tid'].tolist()
+    rp_res = eval.r_precision(tid_list, true_tid)
     if math.isnan(rp_res):
         rp_res = 0.0
     print(pid, " r-precision: ", rp_res)
@@ -51,7 +63,10 @@ ndcg = list()
 for pid in list_pid:
     rec_tid = df_rec.loc[df_rec['pid'] == pid, 'tid'].tolist()
     true_tid = df_true.loc[df_true['pid'] == pid, 'tid'].tolist()
-    ndcg_res = eval.ndcg(rec_tid, true_tid)
+    # ndcg_res = eval.ndcg(rec_tid, true_tid)
+    df_test_p = df_track.sample(n=500, replace=False, random_state=1)
+    tid_list = df_test_p['tid'].tolist()
+    ndcg_res = eval.ndcg(tid_list, true_tid)
     print(ndcg_res)
     ndcg.append(ndcg_res)
 

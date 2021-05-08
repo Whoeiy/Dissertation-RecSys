@@ -13,7 +13,7 @@ import math
 def r_precision(rec, actual):
     actual = np.unique(actual)
     mask = np.in1d(rec[:len(actual)], actual)
-    
+    # mask = np.in1d(rec, actual)
     # mask = np.in1d(rec[:l], actual)
     # mask = np.in1d(rec, actual)
     res = (mask.sum() / len(actual))

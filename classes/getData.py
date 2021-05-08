@@ -11,7 +11,7 @@ import vaex
 
 class getData:
     pntPath_hdf5 = '../data/hdf5/playlist_tracks.hdf5'
-    tracksPath_hdf5 = '../data/hdf5_500K/tracks.hdf5'
+    tracksPath_hdf5 = '../data/hdf5/real/tracks.hdf5'
     playlistsPath_hdf5 = '../data/hdf5/playlists_info.hdf5'
     
     def getPlaylists(self, retype, playlistsPath_hdf5):
